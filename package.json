@@ -1,0 +1,30 @@
+{
+  "name": "food-ordering-system",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.ts",
+    "start": "node index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PraveenMali9571/Food-Ordering-System.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/PraveenMali9571/Food-Ordering-System/issues"
+  },
+  "homepage": "https://github.com/PraveenMali9571/Food-Ordering-System#readme",
+  "devDependencies": {
+    "@types/node": "^25.3.1",
+    "mongoose": "^9.2.2",
+    "nodemon": "^3.1.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
