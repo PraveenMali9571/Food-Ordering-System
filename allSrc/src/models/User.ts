@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 const {Schema,model}= mongoose;
-import {Usertype} from "../interface/Interface";
+import {Usertype} from "../../interface/Interface";
 
 const UserSchema = new Schema<Usertype>({
     name:{
@@ -18,6 +18,9 @@ const UserSchema = new Schema<Usertype>({
     mobile:{
         type:Number,
         required:true,
+    },
+    Time:{
+        type:Date,
     }
     
 },{

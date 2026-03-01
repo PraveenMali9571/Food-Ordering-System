@@ -1,13 +1,15 @@
 import type{Request , Response } from "express";
 import UserObj from "../services/UserServices";
 // import User from '../models/User.ts';
-import { Usertype } from "../interface/Interface";
+import { Usertype } from "../../interface/Interface";
 
 
-const UserCreate= (req:Request<{},{},Usertype>,res:Response)=>{
+const UserCreate= async(req:Request<{},{},Usertype>,res:Response)=>{
         try{
+            const dt= new Date();
+               const body = Object.assign(req.body,{Time:dt}) ;
 
-                const createData= UserObj.Create(req.body);
+                const createData= await UserObj.Create(body);
                 // console.log(body);
 
                 // console.log("req.body",body['IsoStamp'].getMonth(),body['IsoStamp'].getDay());
@@ -17,8 +19,9 @@ const UserCreate= (req:Request<{},{},Usertype>,res:Response)=>{
                     throw new Error(`something wrong in the class side`);
 
                 }
+                console.log(createData,"createdaa object from response");
 
-                res.status(200).json({message:"data send successfully"});
+                res.status(200).json(createData);
             }
 
         catch(err)

@@ -14,6 +14,9 @@
 
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
-  
-  }
+
+     "rootDir": "./allSrc",   
+    "outDir": "./dist",
+  },
+  "include": ["allSrc/**/*"] 
 }
