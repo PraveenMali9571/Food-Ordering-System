@@ -1,3 +1,5 @@
+import { KitchenProcess } from "../../ConversionFunc/Function";
+import { successResponse } from "../../utils/responseObj";
 import { MenuModel, DishIngModel } from "../MenuModels/Menu.model";
 
 class Menu {
@@ -48,42 +50,46 @@ class Menu {
 
     async readMenu(Meal: any) {
         try {
-            const reData = await MenuModel.find({ Meal: Meal },
-                { List: 1, _id: 1 }
-            );
-            if(!reData){
-                throw new Error(reData);
+            const reData = await MenuModel.findOne({
+                Meal: Meal.toLowerCase()
+            },
+        { 
+            List:1
+        });
+
+            if (!reData) {
+                throw new Error("Menu Not Found");
             }
-            // console.log(reData, "redata", Meal, "meal",typeof Meal, "typeof it");
-            // const menulist= reData?.List;
+
             return reData;
         }
         catch (err: any) {
             // console.log(reData);
-            throw new Error(`error in the read side ${err}`);
+            throw new Error(`error in the read side `);
         }
     }
 
-    async readDish(Dish:any){
-        try{
-            const reDish= await DishIngModel.find(
+    async readDish(Dish: any, onWaiting: Function) {
+        try {
+            const reDish = await DishIngModel.find(
                 {
-                ItemName:Dish
-            },
-            {
-                    ItemName:1,
-                    Ingredient:1
+                    ItemName: Dish
+                },
+                {
+                    ItemName: 1,
+                    Ingredient: 1
                 });
-                
 
-                console.log(reDish);
+            const cookdata = await KitchenProcess(reDish, onWaiting);
 
-          return reDish;
-            // if(!reDish){
-            //     throw
-            // }
+
+            if (cookdata) {
+                console.log(cookdata, "cookdata");
+                return cookdata;
+            }
+
         }
-        catch(err:any){
+        catch (err: any) {
             throw new Error(`Error in the readDish Side`);
         }
     }
