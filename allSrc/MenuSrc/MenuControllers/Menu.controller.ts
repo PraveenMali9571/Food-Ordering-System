@@ -2,6 +2,7 @@ import express from "express";
 import type { NextFunction, Request, Response } from "express"
 import { Menutype,DishIngListType } from "../../interface/Interface";
 import MenuObj from "../MenuServices/Menu.service";
+import { InternalServerError, NotFoundError } from "../../utils/errorClasses";
 
 
 // <======================== MENU FUNCTION ====================>
@@ -10,21 +11,19 @@ const MenuCreate = async (req: Request<{}, {}, Menutype>, res: Response,next:Nex
     try {
         const body = req.body;
         const MenuData = await MenuObj.createMenu(body);
-        // console.log(MenuData, "menu data");
 
         if (!MenuData) {
-            throw new Error("something wrong in the menulist side");
+            throw new InternalServerError("something wrong in the menulist side");
         }
 
-        // console.log("in controlller response above");
         res.status(200).json({ message: "Menu added successfully" });
 
     }
     catch (err) {
-       
-       next(err); // res.status(400).json(err);
+       next(err);
     }
 }
+
 
 // <======================== DISH INGRIDEINT LIST FUNCTION ====================>
 
@@ -34,14 +33,14 @@ const DishIngCreate = async (req: Request<{}, {},DishIngListType>, res: Response
         const Dishdata = await MenuObj.createDish(Ingbody);
 
         if (!Dishdata) {
-            throw new Error(`Dish Data not failed to fetch`);
+            throw new InternalServerError(`Dish Data not failed to fetch`);
         }
+
         res.status(200).json(Dishdata);
         
     } 
     catch (err) {
-       
-       next(err); // res.status(400).json(err);
+       next(err);
     }
 }
 
@@ -53,47 +52,48 @@ const MenuRead= async(req:Request,res:Response,next:NextFunction)=>{
         const { Meal} = req.params;
 
         const readData= await MenuObj.readMenu(Meal);
+
         if(!readData){
-            throw new Error(`readData not Found or failed to fetch`);
+            throw new NotFoundError(`readData not Found or failed to fetch`);
         }
+
         res.status(200).json(readData);
+
     }
     catch(err){
-       
-       next(err); // res.status(400).json(`error in menu read ${err}`);
+       next(err);
     }
 }
 
 
-// <======================== MENU READ FUNCTION ====================>
+// <======================== DISH READ FUNCTION ====================>
 
 const  DishRead = async(req:Request,res:Response,next:NextFunction)=>{
     try{
         const {Dish}=req.params;
-        res.setHeader("Content-Type", "application/json");
-    res.setHeader("Content-Encoding", "identity");
-    res.setHeader("Transfer-Encoding", "chunked");
-    // res.setHeader("Cache-Control", "no-cache");
-    res.setHeader("Connection", "keep-alive");
 
-            const onWaiting = function (subResData:any){
-                console.log("working of the waiting function");
-            res.write(JSON.stringify(subResData)); // this send the sub-response from service
+        res.setHeader("Content-Type", "application/json");
+        res.setHeader("Content-Encoding", "identity");
+        res.setHeader("Transfer-Encoding", "chunked");
+        res.setHeader("Connection", "keep-alive");
+
+        const onWaiting = function (subResData:any){
+
+            console.log("working of the waiting function");
+            res.write(JSON.stringify(subResData));
         }
         
         const DishreadData = await MenuObj.readDish(Dish,onWaiting);
 
         if(!DishreadData){
-
-            throw new Error(`DishreadData failed to fetch`);
+            throw new NotFoundError(`DishreadData failed to fetch`);
         }
+
         res.end(JSON.stringify(DishreadData));
         
     }catch(err){
-       
        next(err); 
     }
-
 }
 
 export { MenuCreate, DishIngCreate,MenuRead,DishRead};

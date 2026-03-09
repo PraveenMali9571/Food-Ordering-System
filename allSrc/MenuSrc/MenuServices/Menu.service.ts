@@ -1,6 +1,6 @@
-import { KitchenProcess } from "../../ConversionFunc/Function";
-import { successResponse } from "../../utils/responseObj";
+import { KitchenProcess } from "../../ConversionFunc/KitchenFunction";
 import { MenuModel, DishIngModel } from "../MenuModels/Menu.model";
+import { InternalServerError, NotFoundError } from "../../utils/errorClasses";
 
 class Menu {
 
@@ -12,10 +12,8 @@ class Menu {
             console.log("above return statment menuadd", menuAdd);
 
             if (!menuAdd) {
-
                 console.log("in the menuAdd");
-                throw new Error("something wrong in this side of menuAdd function");
-
+                throw new InternalServerError("something wrong in this side of menuAdd function");
             }
 
             console.log("below menuAdd");
@@ -24,7 +22,7 @@ class Menu {
 
         }
         catch (err: any) {
-            throw new Error(`something wrong happened ${err}`);
+            throw new InternalServerError(`something wrong happened ${err}`);
         }
 
     }
@@ -35,37 +33,35 @@ class Menu {
             const IngData = await DishIngModel.create(Ingbody);
 
             if (!IngData) {
-
-                throw new Error("error in  Dish ingrident");
+                throw new InternalServerError("error in  Dish ingrident");
             }
 
             return "successfully added Dish ingredent";
         }
         catch (err: any) {
-
-            throw new Error(`${err} error in createDish method`);
-
+            throw new InternalServerError(`${err} error in createDish method`);
         }
     }
 
     async readMenu(Meal: any) {
         try {
-            const reData = await MenuModel.findOne({
-                Meal: Meal.toLowerCase()
-            },
-        { 
-            List:1
-        });
+            const reData = await MenuModel.findOne(
+                {
+                    Meal: Meal.toLowerCase()
+                },
+                { 
+                    List:1
+                }
+            );
 
             if (!reData) {
-                throw new Error("Menu Not Found");
+                throw new NotFoundError("Menu Not Found");
             }
 
             return reData;
         }
         catch (err: any) {
-            // console.log(reData);
-            throw new Error(`error in the read side `);
+            throw new InternalServerError(`error in the read side`);
         }
     }
 
@@ -80,8 +76,8 @@ class Menu {
                     Ingredient: 1
                 });
 
-            const cookdata = await KitchenProcess(reDish, onWaiting);
-
+            console.log(reDish[0],"redish service redish");
+            const cookdata = await KitchenProcess(reDish[0], onWaiting);
 
             if (cookdata) {
                 console.log(cookdata, "cookdata");
@@ -90,7 +86,7 @@ class Menu {
 
         }
         catch (err: any) {
-            throw new Error(`Error in the readDish Side`);
+            throw new InternalServerError(`Error in the readDish Side`);
         }
     }
 
@@ -98,4 +94,3 @@ class Menu {
 
 const MenuObj = new Menu();
 export default MenuObj;
-
