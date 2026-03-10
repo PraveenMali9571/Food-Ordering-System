@@ -1,5 +1,5 @@
 
-import { paraMeal } from "./Function";
+import { getMealTypeByTime, paraMeal } from "./Function";
 import { salesbyDaily } from "./SaleFunction";
 
 // <========================== FUNCTION FOR KITCHEN ======================>
@@ -26,15 +26,29 @@ const interval = (oid: number) => {
 const ArrOrder: any = [];
 export const KitchenProcess = async (DishIngObj: any, onWaiting: Function) => {
     const nowt = new Date();
+    // const nowt = "20:00";
     DishIngObj["oid"] = ArrOrder.length;
     ArrOrder.unshift(DishIngObj);
-
-    onWaiting({ status: "waiting" });
-    const MealBytime = paraMeal(nowt);
-
     const itemName = DishIngObj?.["ItemName"];
 
-    if (itemName === MealBytime) {
+    onWaiting({ status: "waiting" });
+
+    const MealBytime = paraMeal(nowt);
+    console.log(MealBytime);
+    const Menu: any = await getMealTypeByTime(nowt);
+
+
+    let DishInTheMenu: boolean = false;
+
+    for (const ele of Menu) {
+        if (itemName === ele.ItemName) {
+            console.log(itemName, "itemname", ele.ItemName, "Menu side element");
+            DishInTheMenu = true;
+            break;
+        }
+    }
+
+    if (DishInTheMenu) {
 
         const [timerResult, saleInsertResult] = await Promise.allSettled([
             interval(DishIngObj.oid),
@@ -70,7 +84,7 @@ export const KitchenProcess = async (DishIngObj: any, onWaiting: Function) => {
             return `failed to fetch data or promise got any error`;
         }
     }
-    
+
     else {
         return " Please enter correct time meal only ";
     }
