@@ -1,27 +1,28 @@
 import { KitchenProcess } from "../../ConversionFunc/KitchenFunction";
 import { MenuModel, DishIngModel } from "../MenuModels/Menu.model";
 import { InternalServerError, NotFoundError } from "../../utils/errorClasses";
+import { checkMealMenu } from "../../ConversionFunc/Function";
 
 class Menu {
 
     async createMenu(body: any) {
         try {
 
-            const menuAdd = await MenuModel.create(body);
+            const checkforMenu = await checkMealMenu(body);
 
-            console.log("above return statment menuadd", menuAdd);
+            if (!checkforMenu) {
 
-            if (!menuAdd) {
-                console.log("in the menuAdd");
-                throw new InternalServerError("something wrong in this side of menuAdd function");
+                // console.log(checkforMenu,"in the checkforMenu");
+                throw new InternalServerError("something wrong in this side of checkforMenu function");
+
             }
 
-            console.log("below menuAdd");
+            // console.log("below checkforMenu");
 
-            return "successfully added menu";
+            return checkforMenu;
 
         }
-        catch (err: any) {
+        catch (err) {
             throw new InternalServerError(`something wrong happened ${err}`);
         }
 
@@ -49,8 +50,9 @@ class Menu {
                 {
                     Meal: Meal.toLowerCase()
                 },
-                { 
-                    List:1
+                {
+                    // Meal:1,
+                    List: 1
                 }
             );
 
@@ -76,7 +78,7 @@ class Menu {
                     Ingredient: 1
                 });
 
-            console.log(reDish[0],"redish service redish");
+            console.log(reDish[0], "redish service redish");
             const cookdata = await KitchenProcess(reDish[0], onWaiting);
 
             if (cookdata) {

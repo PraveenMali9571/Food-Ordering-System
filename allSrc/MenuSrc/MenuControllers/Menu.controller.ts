@@ -3,6 +3,8 @@ import type { NextFunction, Request, Response } from "express"
 import { Menutype,DishIngListType } from "../../interface/Interface";
 import MenuObj from "../MenuServices/Menu.service";
 import { InternalServerError, NotFoundError } from "../../utils/errorClasses";
+import { successResponse } from "../../utils/responseObj";
+
 
 
 // <======================== MENU FUNCTION ====================>
@@ -15,8 +17,13 @@ const MenuCreate = async (req: Request<{}, {}, Menutype>, res: Response,next:Nex
         if (!MenuData) {
             throw new InternalServerError("something wrong in the menulist side");
         }
+        // successResponse(res,
+        //     200,
+        //     message:res.message,
+        //     data:MenuData,
 
-        res.status(200).json({ message: "Menu added successfully" });
+        // )
+        res.status(200).json(MenuData);
 
     }
     catch (err) {

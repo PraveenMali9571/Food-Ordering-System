@@ -1,4 +1,5 @@
 
+import { MenuModel } from "../MenuSrc/MenuModels/Menu.model";
 import MenuObj from "../MenuSrc/MenuServices/Menu.service";
 
 // <=========================== FUNCTION FOR GIVING AN MEAL AS A TIME ==================>
@@ -6,12 +7,16 @@ import MenuObj from "../MenuSrc/MenuServices/Menu.service";
 export const getMealTypeByTime = async (Time: any) => {
     try {
         const Menumeal = paraMeal(Time);
-        const menudt = await MenuObj.readMenu(Menumeal);
+        if (Menumeal === "default") {
+                return `Restaurant is Closed Now Came Tomorrow`;
+        } else {
+            const menudt = await MenuObj.readMenu(Menumeal);
 
-        if (!menudt) {
-            throw new Error('No menu data found for the requested time');
+            if (!menudt) {
+                throw new Error('No menu data found for the requested time');
+            }
+            return menudt;
         }
-        return menudt;
     }
     catch (err: any) {
         throw new Error('failed to fetched the Menu Data');
@@ -53,5 +58,73 @@ export function paraMeal(Tm: any) {
     else {
         console.log("default");
         return `default`;
+    }
+}
+
+
+// <====================FUNCTION TO CHECK WHETHER AN MENU AVAILABLE OR NOT========================>
+
+export const checkMealMenu = async (body: any) => {
+
+    const mealExist = body.Meal;
+    const ListObj = body.List[0];
+    const Itemname: string = ListObj.ItemName;
+    console.log(mealExist, "mealExit", ListObj, "LIstobj", Itemname, "Itemname");
+
+    const findMealinDb: any = await MenuModel.findOne(
+        {
+            Meal: mealExist.toLowerCase(),
+
+        }, {
+        List: 1
+    }
+    );
+
+    console.log("finding Meal in Database");
+
+    if (!findMealinDb && findMealinDb == "null") {
+
+        const menuAdd = await MenuModel.create(body);
+
+        console.log(menuAdd, "menuAddin the creation of object");
+
+        return `Menu created with the Dishes successfully`;
+
+    }
+    else {
+        // console.log(findMealinDb.List, "list");
+
+        let dishexist: boolean = true;
+
+        for (const ele of findMealinDb.List) {
+            if (ele.ItemName === Itemname) {
+                console.log(ele.ItemName, "itemName", Itemname, "itemname");
+                dishexist = false;
+                break;
+            };
+        }
+
+        console.log(dishexist, "dishexist in Menucreate");
+
+        if (!dishexist) {
+            return `Dish ${Itemname} allready exist in the Menu ${mealExist} `;
+        }
+        else {
+
+            const AddDishMenu = await MenuModel.updateOne({
+                Meal: mealExist.toLowerCase(),
+            },
+                {
+                    $push: {
+                        List: ListObj
+
+                    }
+                });
+            if (!AddDishMenu) {
+                return `something went wrong`;
+            }
+            return `Dish Added successfully`;
+        }
+
     }
 }
