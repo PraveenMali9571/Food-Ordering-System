@@ -11,174 +11,156 @@ import {
 const MenuRouter = express.Router();
 
 /**
- * Create Menu Route
- *
- * Endpoint used by the restaurant administrator to create a menu
- * for a specific meal type such as breakfast, lunch, or dinner.
- *
- * The menu contains:
- * - Meal name (breakfast | lunch | dinner)
- * - Menu start time
- * - Menu end time
- * - List of dishes available during that meal
- *
- * Each dish in the list contains:
- * - ItemName (dish name)
- * - Description (information about the dish)
- * - DishRate (price of the dish)
- *
- * Use Case:
- * This route is used during system setup or menu updates when the
- * restaurant manager configures what dishes are available at a
- * particular time of the day.
- *
- * User Journey Context:
- * This is the **first step in the backend flow** because the menu
- * must exist before users can view or order dishes.
- *
- * Route:
- * POST /MenuCreate{/DishCreate}
+ * @swagger
+ * tags:
+ *   name: Menu
+ *   description: Menu and dish management APIs
  */
-MenuRouter.post("/MenuCreate{/DishCreate}", MenuCreate);
+
+/**
+ * @swagger
+ * /MenuCreate:
+ *   post:
+ *     summary: Create meal menu
+ *     tags: [Menu]
+ *     description: Create a menu for breakfast, lunch, or dinner with dish list.
+ *     requestBody:
+ *       required: true
+ *     responses:
+ *       200:
+ *         description: Menu created successfully
+ */
+
+/**
+ * Create Menu
+ * Creates a meal menu containing dish list and pricing.
+ * Used by restaurant admin during menu setup.
+ */
+MenuRouter.post("/MenuCreate", MenuCreate);
 
 
 /**
- * Create Dish Ingredient Mapping
- *
- * This route creates the ingredient list required to prepare a dish.
- * It defines which ingredients are used for cooking a particular dish.
- *
- * Each dish contains:
- * - ItemName (dish name)
- * - Ingredient array
- *
- * Each ingredient includes:
- * - Ing (ingredient name)
- * - QuantUse (quantity used for cooking the dish)
- * - Price (cost of the ingredient)
- *
- * Use Case:
- * This is mainly used by the kitchen management system to track
- * ingredient usage when a dish is prepared.
- *
- * User Journey Context:
- * When a user orders a dish later, the system automatically:
- * 1. Reads this ingredient list
- * 2. Deducts ingredient quantities from inventory
- * 3. Updates stock levels
- *
- * Route:
- * POST /MenuIngredient
+ * @swagger
+ * /MenuIngredient:
+ *   post:
+ *     summary: Create dish ingredient mapping
+ *     tags: [Menu]
+ *     description: Adds ingredient list required to cook a dish.
+ *     requestBody:
+ *       required: true
+ *     responses:
+ *       200:
+ *         description: Dish ingredient added successfully
+ */
+
+/**
+ * Create Dish Ingredients
+ * Stores ingredient list used to prepare a dish.
+ * Used later for inventory deduction during orders.
  */
 MenuRouter.post("/MenuIngredient", DishIngCreate);
 
 
 /**
- * Read Menu By Meal
- *
- * This endpoint returns the menu based on the requested meal type.
- * Example meal values:
- * - breakfast
- * - lunch
- * - dinner
- *
- * Use Case:
- * Used by the restaurant manager or frontend system to retrieve
- * available dishes for a specific meal time.
- *
- * Although primarily designed for management and system integration,
- * the frontend can also use this route to display menus dynamically
- * depending on the time of day.
- *
- * Example:
- * GET /Menu/lunch
- *
- * Response:
- * Returns the list of dishes available for the requested meal.
- *
- * Route:
- * GET /Menu/:Meal
+ * @swagger
+ * /Menu/{Meal}:
+ *   get:
+ *     summary: Get menu by meal type
+ *     tags: [Menu]
+ *     parameters:
+ *       - in: path
+ *         name: Meal
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: lunch
+ *     responses:
+ *       200:
+ *         description: Returns menu for requested meal
+ */
+
+/**
+ * Read Menu
+ * Returns dishes available for a specific meal time
+ * such as breakfast, lunch, or dinner.
  */
 MenuRouter.get("/Menu/:Meal", MenuRead);
 
 
 /**
- * Dish Order Processing Route
- *
- * This endpoint simulates the ordering of a dish.
- *
- * When a user selects a dish from the menu, this API triggers
- * the complete backend flow required to process that order.
- *
- * Behind the scenes the system performs multiple operations:
- *
- * 1. Reads the dish ingredient list
- * 2. Deducts ingredient quantities from inventory
- * 3. Updates kitchen stock levels
- * 4. Updates daily sales records
- * 5. Tracks dish preparation workflow
- *
- * The goal is to keep the entire ordering pipeline fast so that
- * all dependent systems (inventory, sales, kitchen operations)
- * are updated immediately after a dish is ordered.
- *
- * User Journey Context:
- * This route represents the **core action performed by a user**
- * when they place an order in the restaurant system.
- *
- * Example:
- * GET /Menu/DishOrder/Palak Paneer
- *
- * Route:
- * GET /Menu/DishOrder/:Dish
+ * @swagger
+ * /Menu/DishOrder/{Dish}:
+ *   get:
+ *     summary: Order a dish
+ *     tags: [Menu]
+ *     description: Starts kitchen process, updates sales and inventory.
+ *     parameters:
+ *       - in: path
+ *         name: Dish
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: Palak Paneer
+ *     responses:
+ *       200:
+ *         description: Dish order processed
+ */
+
+/**
+ * Dish Order
+ * Simulates ordering a dish and triggers backend flow:
+ * kitchen process → inventory deduction → sales update.
  */
 MenuRouter.get("/Menu/DishOrder/:Dish", DishRead);
 
 
 /**
- * Delete Menu or Dish From Menu
- *
- * This endpoint supports two deletion scenarios:
- *
- * 1. Delete an entire meal menu
- *    Example:
- *    DELETE /Menu/lunch
- *
- * 2. Delete a specific dish from a meal menu
- *    Example:
- *    DELETE /Menu/lunch/Palak Paneer
- *
- * Use Case:
- * Used by the restaurant administrator to manage menus and remove
- * dishes that are no longer available.
- *
- * Route:
- * DELETE /Menu/:Meal{/:Dish}
+ * @swagger
+ * /Menu/{Meal}:
+ *   delete:
+ *     summary: Delete meal menu
+ *     tags: [Menu]
+ *     parameters:
+ *       - in: path
+ *         name: Meal
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Menu deleted
+ */
+
+/**
+ * Delete Menu
+ * Removes a full meal menu or a specific dish
+ * from the menu list.
  */
 MenuRouter.delete("/Menu/:Meal{/:Dish}", DeleteMenuWithDish);
 
 
 /**
- * Delete Dish Ingredient Information
- *
- * This route deletes ingredient information associated with a dish.
- *
- * It supports:
- * - Deleting the entire ingredient list of a dish
- * - Deleting a specific ingredient from the ingredient list
- *
- * Example:
- * DELETE /Menu/PalakPaneer
- * DELETE /Menu/PalakPaneer/Paneer
- *
- * Use Case:
- * Used when modifying recipes or removing ingredients
- * from a dish configuration in the kitchen system.
- *
- * Route:
- * DELETE /Menu/:DishIng{/:IngName}
+ * @swagger
+ * /Menu/{DishIng}:
+ *   delete:
+ *     summary: Delete dish ingredient mapping
+ *     tags: [Menu]
+ *     parameters:
+ *       - in: path
+ *         name: DishIng
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Ingredient mapping removed
+ */
+
+/**
+ * Delete Dish Ingredients
+ * Removes ingredient mapping of a dish or
+ * deletes a specific ingredient from the list.
  */
 MenuRouter.delete("/Menu/:DishIng{/:IngName}", DeleteDishWithIng);
-
 
 export default MenuRouter;
