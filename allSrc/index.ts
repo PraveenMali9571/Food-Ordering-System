@@ -3,9 +3,9 @@ import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
 import connectDb from "./config/db";
-import UserRouter from "./allSrc/src/routes/UserRoutes";
-import MenuRouter from "./allSrc/MenuSrc/MenuRoutes/Menu.routes";
-import KitchenRouter from "./allSrc/KitchenSrc/KitchenRoutes/Kitchen.routes";
+import UserRouter from "./src/routes/UserRoutes";
+import MenuRouter from "./MenuSrc/MenuRoutes/Menu.routes";
+import KitchenRouter from "./KitchenSrc/KitchenRoutes/Kitchen.routes";
 // import UserRouter from 'path.join(path.resolve(),"/routes/UserRoutes.ts")';
 
 const app = express();
