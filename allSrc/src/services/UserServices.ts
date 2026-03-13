@@ -1,5 +1,4 @@
 import UserSchema from "../models/User";
-import MenuObj from "../../MenuSrc/MenuServices/Menu.service";
 import { getMealTypeByTime} from "../../ConversionFunc/Function";
 import { Usertype } from "../../interface/Interface";
 import { InternalServerError } from "../../utils/errorClasses";
@@ -20,7 +19,7 @@ class User {
       return TmMeal;
 
     } catch (err: any) {
-      console.error("Create Error:", err);
+
       throw new InternalServerError("Create Error");
     }
   }

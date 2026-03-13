@@ -1,8 +1,8 @@
 import type{NextFunction, Request , Response } from "express";
 import UserObj from "../services/UserServices";
 import { Usertype } from "../../interface/Interface";
-
 import { InternalServerError } from "../../utils/errorClasses";
+import { successResponse } from "../../utils/responseObj";
 
 const UserCreate= async(req:Request<{},{},Usertype>,res:Response,next:NextFunction)=>{
         try{
@@ -15,10 +15,7 @@ const UserCreate= async(req:Request<{},{},Usertype>,res:Response,next:NextFuncti
             {
                 throw new InternalServerError(`something wrong in the class side`);
             }
-
-            // console.log(createData,"createdaa object from response");
-
-            res.status(200).json(createData);
+            successResponse(res,200,"creation of user successfully",createData);
         }
 
         catch(err)

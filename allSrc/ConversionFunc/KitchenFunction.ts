@@ -24,6 +24,14 @@ const interval = (oid: number) => {
 
 }
 
+/**
+ * Handles the complete kitchen workflow for a dish order.
+ *
+ * Validates whether the dish exists in the current meal menu,
+ * starts the cooking timer, and updates the daily sales record.
+ * It also sends intermediate status updates such as "waiting"
+ * and returns the final completion status when the dish is ready.
+ */
 const ArrOrder: any = [];
 export const KitchenProcess = async (DishIngObj: any, onWaiting: Function) => {
     const nowt = new Date();
@@ -94,6 +102,14 @@ export const KitchenProcess = async (DishIngObj: any, onWaiting: Function) => {
 }
 
 // <==================FUNCTION FOR THE DISH CREATION WITH THE INGREDIENT ALSO ADD IN IT ============>
+
+/**
+ * Manages creation or update of dish ingredient mappings.
+ *
+ * If the dish does not exist, it creates a new dish with its
+ * ingredient list. If the dish already exists, it checks for
+ * duplicate ingredients and adds only new ingredients to the dish.
+ */
 export const checkAddDishAddIng = async (Ingbody: any) => {
     const DishName = Ingbody.ItemName;
 

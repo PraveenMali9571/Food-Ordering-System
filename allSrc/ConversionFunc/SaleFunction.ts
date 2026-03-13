@@ -6,7 +6,13 @@ import { createMealEntries, createObjByDate, updateMealEntry } from "./CaseForSa
 // import { paraMeal } from "./Function";
 
 // <================ FUNCTION TO PERFORM THE SALES OPERATION ==================>
-
+/**
+ * Determines how the daily sales record should be updated.
+ *
+ * It checks whether a sales document exists for the given date and
+ * decides between three cases: create a new daily sales object,
+ * add a new meal entry, or update an existing meal entry.
+ */
 const findingOperation = async (PresentDate: Date | string, MealBytime: string, itemName: string) => {
 
     const SaleObjbyDb = await KitchenObj.readSalebyDate(PresentDate);
@@ -80,6 +86,14 @@ const findingOperation = async (PresentDate: Date | string, MealBytime: string, 
     }
 };
 
+/**
+ * Executes the complete daily sales workflow when a dish is ordered.
+ *
+ * It updates the daily sales record and deducts ingredient quantities
+ * from kitchen inventory simultaneously. Both operations run in
+ * parallel to keep order processing fast.
+ */
+
 export const salesbyDaily = async function (DishObj: any,MealBytime:string,itemName:string) {
     const now = new Date();
     const PresentDate = now.toLocaleDateString('en-CA'); // "2026-03-07" in this format
@@ -134,6 +148,13 @@ export const salesbyDaily = async function (DishObj: any,MealBytime:string,itemN
 
 
 //  <===============FUNCTION TO FIND HOW MANY INGREDIENT LEFT AFTER DISH MAKING ============>
+/**
+ * Updates kitchen inventory after a dish is prepared.
+ *
+ * For each ingredient used in the dish, the function deducts the
+ * required quantity from the stock using an atomic database update.
+ */
+
 const totalQuantandDishQuant = async function (IngArr: any) {
 
     for (const ele of IngArr) {

@@ -3,7 +3,13 @@ import { MenuModel } from "../MenuSrc/MenuModels/Menu.model";
 import MenuObj from "../MenuSrc/MenuServices/Menu.service";
 
 // <=========================== FUNCTION FOR GIVING AN MEAL AS A TIME ==================>
-
+/**
+ * Determines the current meal type based on the provided time.
+ *
+ * It calculates whether the time falls into breakfast, lunch, or dinner
+ * and then fetches the corresponding menu from the database. If the
+ * restaurant is closed, it returns a default opening message.
+ */
 export const getMealTypeByTime = async (Time: any) => {
     try {
         const Menumeal = paraMeal(Time);
@@ -25,7 +31,13 @@ export const getMealTypeByTime = async (Time: any) => {
 
 
 }
-
+/**
+ * Converts a given timestamp into a meal category.
+ *
+ * It compares the current time with predefined time ranges and
+ * returns the appropriate meal type (breakfast, lunch, dinner)
+ * or "default" if the restaurant is outside service hours.
+ */
 export function paraMeal(Tm: any) {
     let now = new Date(Tm);
     let Hr = now.getHours();
@@ -40,10 +52,6 @@ export function paraMeal(Tm: any) {
     let lunchEndTime: number = HourToMinutes(18, 30);
     let dinnerEndTime: number = HourToMinutes(20, 30);
 
-    // if(UserCametime<breakfastStartTime){
-    //     return `Please for few minute Our restaurant is Opening soon`;
-    // }
-    // else 
     if (breakfastStartTime <= UserCametime && UserCametime <= breakfastEndTime) {
 
         console.log("breakfast");
@@ -68,7 +76,13 @@ export function paraMeal(Tm: any) {
 
 
 // <====================FUNCTION TO CHECK WHETHER AN MENU AVAILABLE OR NOT========================>
-
+/**
+ * Checks whether a meal menu or dish already exists in the database.
+ *
+ * If the meal menu does not exist, it creates a new menu. If the meal
+ * exists, it verifies whether the dish is already present and either
+ * prevents duplication or adds the new dish to the menu list.
+ */
 export const checkMealMenu = async (body: any) => {
 
     const mealExist = body.Meal;

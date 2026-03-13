@@ -3,8 +3,7 @@ import type { NextFunction, Request, Response } from "express"
 import { Menutype, DishIngListType } from "../../interface/Interface";
 import MenuObj from "../MenuServices/Menu.service";
 import { InternalServerError, NotFoundError, NotImplementedError } from "../../utils/errorClasses";
-import { successResponse } from "../../utils/responseObj";
-import { asyncWrapProviders } from "async_hooks";
+
 
 
 
@@ -18,12 +17,7 @@ const MenuCreate = async (req: Request<{}, {}, Menutype>, res: Response, next: N
         if (!MenuData) {
             throw new InternalServerError("something wrong in the menulist side");
         }
-        // successResponse(res,
-        //     200,
-        //     message:res.message,
-        //     data:MenuData,
 
-        // )
         res.status(200).json(MenuData);
 
     }
@@ -104,6 +98,8 @@ const DishRead = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
+
+// <====================== MENU AND DISH DELETION FUNCTION ====================>
 const DeleteMenuWithDish = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { Meal = "Default", Dish = "Default" } = req.params;
@@ -122,6 +118,7 @@ const DeleteMenuWithDish = async (req: Request, res: Response, next: NextFunctio
     }
 }
 
+// <=============================DISH AND INGREDIENT FUNCTION ======================>
 const DeleteDishWithIng = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { Dish = "Default", IngName = "Default" } = req.params;
@@ -134,7 +131,7 @@ const DeleteDishWithIng = async (req: Request, res: Response, next: NextFunction
         return DeleteDishIngdata;
 
     } catch (err) {
-        
+
         next(err);
     }
 }

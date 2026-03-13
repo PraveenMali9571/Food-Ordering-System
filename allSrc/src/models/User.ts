@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 const {Schema,model}= mongoose;
 import {Usertype} from "../../interface/Interface";
 
+            // Schema for the User to store an information in DB
+
 const UserSchema = new Schema<Usertype>({
     name:{
         type:String,

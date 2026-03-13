@@ -1,12 +1,14 @@
 import { SalesbyDailyObjtype } from "../interface/Interface";
 import KitchenObj from "../KitchenSrc/KitchenServices/Kitchen.service";
-import { IngredientStockModel } from "../KitchenSrc/KitchenModels/Kitchen.model";
-import MenuObj from "../MenuSrc/MenuServices/Menu.service";
-import { paraMeal } from "./Function";
 
 
 
-// <================FUNCTION FOR CASE 1======================>
+/**
+ * Case 1: Create Daily Sales Object
+ *
+ * Creates a new daily sales document when no sales record exists
+ * for the given date. Initializes the daily total and first meal entry.
+ */
 const createObjByDate = async function (PresentDate: Date | string,
     MealBytime: string,
     dailytotal: number,
@@ -36,8 +38,12 @@ const createObjByDate = async function (PresentDate: Date | string,
         return true;
     }
 }
-
-// <===================FUNCTION FOR CASE 2 ==============>
+/**
+ * Case 2: Create Meal Entry
+ *
+ * Adds a new meal entry inside the existing daily sales object
+ * when the meal type (breakfast/lunch/dinner) is not yet recorded.
+ */
 const createMealEntries = async function (
     PresentDate: Date | string,
     result: any,
@@ -55,8 +61,12 @@ const createMealEntries = async function (
 
 }
 
-// <====================FUNCTION FOR CASE 3 ==============>
-
+/**
+ * Case 3: Update Existing Meal Entry
+ *
+ * Updates the sales values of an already existing meal entry by
+ * increasing total amount, total dishes, and daily totals.
+ */
 const updateMealEntry = async function (
     PresentDate: Date | string,
     MealBytime: string,
@@ -79,4 +89,4 @@ const updateMealEntry = async function (
 
 }
 
-export {updateMealEntry,createMealEntries,createObjByDate};
+export { updateMealEntry, createMealEntries, createObjByDate };
