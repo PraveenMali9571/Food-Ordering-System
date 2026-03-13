@@ -1,10 +1,10 @@
 import express from "express";
-import { createInvent } from "../KitchenControllers/Kitchen.controller";
+import { createInvent, ReadSalesByDaily } from "../KitchenControllers/Kitchen.controller";
 
 
 const KitchenRouter = express.Router();
 
 KitchenRouter.post("/KitchenInventory",createInvent);
-// KitchenRouter.get("/")
+KitchenRouter.get("/SalesDaily/:SaleDate",ReadSalesByDaily);
 
 export default KitchenRouter;

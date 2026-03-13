@@ -30,13 +30,16 @@ class Kitchen {
         }
     }
 
-    async readSalebyDate(CurrentDate: Date | String) {
+    async readSalebyDate(CurrentDate: Date | string) {
         try {
-            const SaleObjbyDb = await SalesbyDailyModel.findOne(
+            const SaleObjbyDb:any = await SalesbyDailyModel.findOne(
                 {
                     SaleDate: CurrentDate,
                 },
             )
+            if(!SaleObjbyDb){
+                return `current date sale is not available`;
+            }
             return SaleObjbyDb;
 
         } catch (err) {

@@ -8,7 +8,8 @@ export const getMealTypeByTime = async (Time: any) => {
     try {
         const Menumeal = paraMeal(Time);
         if (Menumeal === "default") {
-                return `Restaurant is Closed Now Came Tomorrow`;
+
+            return `Restaurant is Opening soon`;
         } else {
             const menudt = await MenuObj.readMenu(Menumeal);
 
@@ -39,6 +40,10 @@ export function paraMeal(Tm: any) {
     let lunchEndTime: number = HourToMinutes(18, 30);
     let dinnerEndTime: number = HourToMinutes(20, 30);
 
+    // if(UserCametime<breakfastStartTime){
+    //     return `Please for few minute Our restaurant is Opening soon`;
+    // }
+    // else 
     if (breakfastStartTime <= UserCametime && UserCametime <= breakfastEndTime) {
 
         console.log("breakfast");
@@ -82,7 +87,7 @@ export const checkMealMenu = async (body: any) => {
 
     console.log("finding Meal in Database");
 
-    if (!findMealinDb && findMealinDb == "null") {
+    if (!findMealinDb) {
 
         const menuAdd = await MenuModel.create(body);
 
@@ -92,7 +97,7 @@ export const checkMealMenu = async (body: any) => {
 
     }
     else {
-        // console.log(findMealinDb.List, "list");
+        console.log(findMealinDb.List, "list");
 
         let dishexist: boolean = true;
 
@@ -117,7 +122,6 @@ export const checkMealMenu = async (body: any) => {
                 {
                     $push: {
                         List: ListObj
-
                     }
                 });
             if (!AddDishMenu) {
