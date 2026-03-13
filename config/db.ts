@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import dotenv from "dotenv";
+// import dotenv from "dotenv";
+const dotenv = require("dotenv")
 dotenv.config();
 const ADMIN_USER = process.env.ADMIN_USER as String;
 const PASSWORD = process.env.PASSWORD as String;
