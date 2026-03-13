@@ -1,5 +1,5 @@
 import express from "express";
-import {MenuCreate,DishIngCreate,MenuRead ,DishRead} from "../MenuControllers/Menu.controller";
+import {MenuCreate,DishIngCreate,MenuRead ,DishRead, DeleteDishWithIng,DeleteMenuWithDish} from "../MenuControllers/Menu.controller";
 
 const MenuRouter = express.Router();
 
@@ -12,6 +12,8 @@ MenuRouter.post("/MenuIngredient",DishIngCreate);
 MenuRouter.get("/Menu/:Meal",MenuRead);
 MenuRouter.get("/Menu/DishOrder/:Dish",DishRead);
 
-// MenuRouter.
+// MenuRouter.patch()
+MenuRouter.delete("/Menu/:Meal{/:Dish}",DeleteMenuWithDish);
+MenuRouter.delete("/Menu/:DishIng{/:IngName}",DeleteDishWithIng);
 
 export default MenuRouter;

@@ -1,4 +1,5 @@
 
+import { DishIngModel } from "../MenuSrc/MenuModels/Menu.model";
 import { getMealTypeByTime, paraMeal } from "./Function";
 import { salesbyDaily } from "./SaleFunction";
 
@@ -34,13 +35,14 @@ export const KitchenProcess = async (DishIngObj: any, onWaiting: Function) => {
     onWaiting({ status: "waiting" });
 
     const MealBytime = paraMeal(nowt);
-    console.log(MealBytime);
-    const Menu: any = await getMealTypeByTime(nowt);
+    console.log(MealBytime, "Mealby time ");
 
+    const Menu: any = await getMealTypeByTime(nowt);
+    // console.log(Menu,"Menu");
 
     let DishInTheMenu: boolean = false;
 
-    for (const ele of Menu) {
+    for (const ele of Menu.List) {
         if (itemName === ele.ItemName) {
             console.log(itemName, "itemname", ele.ItemName, "Menu side element");
             DishInTheMenu = true;
@@ -86,7 +88,71 @@ export const KitchenProcess = async (DishIngObj: any, onWaiting: Function) => {
     }
 
     else {
-        return " Please enter correct time meal only ";
+        return " Please enter correct  Meal at time ";
     }
+
+}
+
+// <==================FUNCTION FOR THE DISH CREATION WITH THE INGREDIENT ALSO ADD IN IT ============>
+export const checkAddDishAddIng = async (Ingbody: any) => {
+    const DishName = Ingbody.ItemName;
+
+    const IngredientArr = Ingbody.Ingredient;
+    console.log(IngredientArr, "ingredient Array", DishName, "DishName");
+    const findDish = await DishIngModel.findOne({
+        ItemName: DishName
+    })
+
+    if (!findDish) {
+        const IngData = await DishIngModel.create(Ingbody);
+        if (!IngData) {
+            return `failed to Add the Dish in the Db`;
+        }
+        return `Dish Added Successfully`;
+    }
+    else {
+        let Ingexist: boolean = false;
+
+        for (let ArrEle of IngredientArr) {
+            let userIng = ArrEle.Ing;
+            console.log(userIng, "UserIngredient");
+            for (let ele of findDish.Ingredient) {
+                console.log(ele, "ele of the findDish");
+                if (ele.Ing === userIng) {
+                    Ingexist = true;
+                    console.log(userIng, "userIng");
+                    return `${userIng} this ingredient already exist in the Dish`;
+                }
+            }
+        }
+        console.log(Ingexist, "Ingexist");
+
+        if (IngredientArr.length > 0 && !Ingexist) {
+            let count = 0;
+            for (let ele of IngredientArr) {
+
+                const addIng = await DishIngModel.updateOne({
+                    ItemName: DishName,
+
+                }, {
+                    $push: {
+
+                        Ingredient: ele
+                    }
+                })
+                count++;
+
+            }
+            if (IngredientArr.length === count) {
+                return `Ingredient added successfully`;
+            }
+
+        } else {
+            return `No Ingredient Data available `;
+        }
+    }
+
+
+
 
 }

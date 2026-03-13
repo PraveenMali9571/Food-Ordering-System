@@ -1,4 +1,4 @@
-import { KitchenProcess } from "../../ConversionFunc/KitchenFunction";
+import { checkAddDishAddIng, KitchenProcess } from "../../ConversionFunc/KitchenFunction";
 import { MenuModel, DishIngModel } from "../MenuModels/Menu.model";
 import { InternalServerError, NotFoundError } from "../../utils/errorClasses";
 import { checkMealMenu } from "../../ConversionFunc/Function";
@@ -12,12 +12,12 @@ class Menu {
 
             if (!checkforMenu) {
 
-                // console.log(checkforMenu,"in the checkforMenu");
+                console.log(checkforMenu, "in the checkforMenu");
                 throw new InternalServerError("something wrong in this side of checkforMenu function");
 
             }
 
-            // console.log("below checkforMenu");
+            console.log("below checkforMenu");
 
             return checkforMenu;
 
@@ -31,13 +31,13 @@ class Menu {
     async createDish(Ingbody: any) {
         try {
 
-            const IngData = await DishIngModel.create(Ingbody);
+            const IngData = await checkAddDishAddIng(Ingbody);
 
             if (!IngData) {
                 throw new InternalServerError("error in  Dish ingrident");
             }
 
-            return "successfully added Dish ingredent";
+            return IngData;
         }
         catch (err: any) {
             throw new InternalServerError(`${err} error in createDish method`);
@@ -92,6 +92,78 @@ class Menu {
         }
     }
 
+    async deleteMealDish(Meal: any, Dish: any) {
+        console.log("in the service");
+
+        if (Dish === "Default") {
+            console.log(Dish, "dish in if block");
+            const findDeleteMenu = await MenuModel.findOneAndDelete({
+                Meal: Meal
+            });
+            if (!findDeleteMenu) {
+                return `No data available on behalf of this Meal in the Menu`;
+            }
+            return " Menu deleted successfully";
+
+        } else {
+            const findDeleteDishbyMenu = await MenuModel.findOneAndUpdate(
+                {
+                    Meal: Meal,
+                    "List.ItemName": Dish
+                },
+                {
+                    $pull: {
+                        List: { ItemName: Dish }
+                    }
+                }
+            );
+
+
+            console.log(findDeleteDishbyMenu, "find dish delete");
+
+            if (!findDeleteDishbyMenu) {
+
+                return 'No data available of the Dish Name';
+            }
+            return `Dish Obj deleted successfully`;
+        }
+
+    }
+
+    async deleteDishIng(Dish: any, IngName: any) {
+        
+        if (IngName === "Default") {
+            const findDishIngforDelete = await DishIngModel.findOneAndDelete(
+                {
+
+                    ItemName: Dish
+                }
+            );
+            if (!findDishIngforDelete) {
+                return ` No Dishes available in the Dishes `;
+            }
+            return findDishIngforDelete;
+        }
+        else {
+            const findDishIng = await DishIngModel.findOneAndUpdate(
+                {
+                    ItemName: Dish,
+                    "Ingredient.Ing": IngName
+                },
+                {
+                    $pull: {
+                        Ingredient: {
+                            Ing: IngName
+                        }
+                    }
+                }
+            )
+            if (!findDishIng) {
+                return `Ingredient is not listed in the Dish for making purpose`;
+            }
+            return findDishIng;
+        }
+    }
 }
 
 const MenuObj = new Menu();
