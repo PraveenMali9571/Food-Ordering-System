@@ -2,6 +2,7 @@
 import { IngredientStockModel } from "../KitchenSrc/KitchenModels/Kitchen.model";
 import KitchenObj from "../KitchenSrc/KitchenServices/Kitchen.service";
 import { DishIngModel } from "../MenuSrc/MenuModels/Menu.model";
+import { ValidationError } from "../utils/errorClasses";
 import { getMealTypeByTime, paraMeal } from "./Function";
 import { salesbyDaily } from "./SaleFunction";
 
@@ -186,7 +187,7 @@ export const checkforInventoryStock = async (inventBody: any) => {
         }
         return AddIngredientInStock;
     } else {
-        return `Ingredient is already in the Stock ${dataInDb}`;
+        throw new ValidationError(`Ingredient is already in the Stock ${dataInDb}`);
     }
 
 }
