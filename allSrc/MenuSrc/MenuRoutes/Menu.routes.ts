@@ -30,7 +30,8 @@ const MenuRouter = express.Router();
  *           type: number
  *           example: 170
  *
- *     MenuCreateSimple:add only the dishes in the Menu like breakfast etc
+ *     MenuCreateSimple:
+ *       description: add only the dishes in the menu like breakfast etc
  *       type: object
  *       required:
  *         - Meal
@@ -44,7 +45,8 @@ const MenuRouter = express.Router();
  *           items:
  *             $ref: '#/components/schemas/Dish'
  *
- *     MenuCreateWithTime: add whole Menu with the dishes also etc
+ *     MenuCreateWithTime:
+ *       description: add whole menu with time and dishes
  *       type: object
  *       required:
  *         - StartTime
@@ -92,6 +94,9 @@ const MenuRouter = express.Router();
  * Create Menu
  * Creates a meal menu containing dish list and pricing.
  * Used by restaurant admin during menu setup.
+ *  MenuCreateSimpl:add only the dishes in the Menu like breakfast etc
+ * and 
+ * MenuCreateWithTim: add whole Menu with the dishes also etc
  */
 MenuRouter.post("/MenuCreate", MenuCreate);
 
@@ -266,7 +271,7 @@ MenuRouter.get("/Menu/DishOrder/:Dish", DishRead);
  * Removes a full meal menu or a specific dish
  * from the menu list.
  */
-MenuRouter.delete("/Menu/:Meal{/:Dish}", DeleteMenuWithDish);
+MenuRouter.delete("/Menu/:Meal/:Dish?", DeleteMenuWithDish);
 
 
 /**
@@ -291,6 +296,6 @@ MenuRouter.delete("/Menu/:Meal{/:Dish}", DeleteMenuWithDish);
  * Removes ingredient mapping of a dish or
  * deletes a specific ingredient from the list.
  */
-MenuRouter.delete("/Menu/:DishIng{/:IngName}", DeleteDishWithIng);
+MenuRouter.delete("/Menu/:DishIng/:IngName?", DeleteDishWithIng);
 
 export default MenuRouter;
