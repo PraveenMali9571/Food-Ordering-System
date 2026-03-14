@@ -271,7 +271,7 @@ MenuRouter.get("/Menu/DishOrder/:Dish", DishRead);
  * Removes a full meal menu or a specific dish
  * from the menu list.
  */
-MenuRouter.delete("/Menu/:Meal/:Dish?", DeleteMenuWithDish);
+MenuRouter.delete("/Menu/:Meal{/:Dish}", DeleteMenuWithDish);
 
 
 /**
@@ -296,6 +296,6 @@ MenuRouter.delete("/Menu/:Meal/:Dish?", DeleteMenuWithDish);
  * Removes ingredient mapping of a dish or
  * deletes a specific ingredient from the list.
  */
-MenuRouter.delete("/Menu/:DishIng/:IngName?", DeleteDishWithIng);
+MenuRouter.delete("/Menu/:DishIng{/:IngName}", DeleteDishWithIng);
 
 export default MenuRouter;
