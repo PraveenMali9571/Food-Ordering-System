@@ -36,7 +36,10 @@ const interval = (oid: number) => {
  */
 const ArrOrder: any = [];
 export const KitchenProcess = async (DishIngObj: any, onWaiting: Function) => {
-    const nowt = new Date();
+    const indianTime = new Date();
+    const nowt = new Date(
+        indianTime.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+    );
     // const nowt = "20:00";
     DishIngObj["oid"] = ArrOrder.length;
     ArrOrder.unshift(DishIngObj);
@@ -172,7 +175,7 @@ export const checkAddDishAddIng = async (Ingbody: any) => {
 
 }
 
-export const checkforInventoryStock = async (inventBody: any)=>{
+export const checkforInventoryStock = async (inventBody: any) => {
     const ingname = inventBody.IngredientName;
     const dataInDb = await KitchenObj.readbyIngName(ingname);
 
