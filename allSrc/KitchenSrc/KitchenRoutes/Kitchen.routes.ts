@@ -1,5 +1,5 @@
 import express from "express";
-import { createInvent, ReadSalesByDaily } from "../KitchenControllers/Kitchen.controller";
+import { createInvent, ReadInventoryByIngName, ReadSalesByDaily } from "../KitchenControllers/Kitchen.controller";
 
 const KitchenRouter = express.Router();
 
@@ -45,6 +45,40 @@ const KitchenRouter = express.Router();
  */
 KitchenRouter.post("/KitchenInventory", createInvent);
 
+
+
+
+/**
+ * @swagger
+ * /Inventory/{IngName}:
+ *   get:
+ *     summary: Get inventory by ingredient name
+ *     tags: [Kitchen]
+ *     description: |
+ *       Retrieves the inventory record for a specific ingredient available in the kitchen.
+ *       This helps restaurant managers check remaining stock levels before preparing dishes.
+ *     parameters:
+ *       - in: path
+ *         name: IngName
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: Tomato
+ *     responses:
+ *       200:
+ *         description: Ingredient inventory returned successfully
+ *       404:
+ *         description: Ingredient not found
+ */
+
+/**
+ * Read Inventory by Ingredient Name
+ *
+ * Returns the available stock information of a specific ingredient
+ * stored in the kitchen inventory. Used for monitoring ingredient
+ * quantities before cooking or restocking.
+ */
+KitchenRouter.get("/Inventory/:IngName",ReadInventoryByIngName);
 
 /**
  * @swagger

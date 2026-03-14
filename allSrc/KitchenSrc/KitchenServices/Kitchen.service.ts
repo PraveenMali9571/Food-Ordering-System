@@ -1,19 +1,20 @@
 import { SalesbyDailyObjtype } from "../../interface/Interface";
 import { IngredientStockModel, SalesbyDailyModel } from "../KitchenModels/Kitchen.model";
-import { InternalServerError, NotFoundError } from "../../utils/errorClasses";
+import { BadRequestError, InternalServerError, NotFoundError, NotImplementedError } from "../../utils/errorClasses";
+import { checkforInventoryStock } from "../../ConversionFunc/KitchenFunction";
 
 class Kitchen {
 
     async createKitchenInventory(inventBody: any) {
         try {
-            const inventoryIngData = await IngredientStockModel.create(inventBody);
+            const inventoryIngData= await checkforInventoryStock(inventBody); 
             if (!inventoryIngData) {
-                throw new InternalServerError("Error occur in the database side ");
+                throw new NotImplementedError("Error occur in the database side ");
             }
             return inventoryIngData;
 
         } catch (err) {
-            throw new InternalServerError("failed to create inventory");
+            throw new InternalServerError("failed to create inventory\n\n");
         }
     }
 
@@ -21,7 +22,7 @@ class Kitchen {
         try {
             const salesData = await SalesbyDailyModel.create(SaleObjbyDb);
             if (!salesData) {
-                throw new InternalServerError("failed to create an sales sheet");
+                throw new NotImplementedError("failed to create an sales sheet");
             }
             return salesData;
         }
@@ -38,7 +39,7 @@ class Kitchen {
                 },
             )
             if(!SaleObjbyDb){
-                return `current date sale is not available`;
+                throw new BadRequestError(`current date sale is not available`);
             }
             return SaleObjbyDb;
 
@@ -47,6 +48,17 @@ class Kitchen {
         }
     }
 
+    async readbyIngName(IngName:string){
+        const IngredientInStock:any= await IngredientStockModel.findOne(
+            {
+                IngredientName:IngName
+            }
+        )
+        if(!IngredientInStock){
+            throw new NotFoundError("Ingredient Not Found in the Stock ");
+        }
+        return IngredientInStock;
+    }
     async createMealEntry(
         PresentDate: Date | string,
         result: any,
@@ -73,7 +85,7 @@ class Kitchen {
             );
 
             if (!createEntryorUpdate) {
-                throw new InternalServerError("failed to add the data");
+                throw new NotImplementedError("failed to add the data");
             }
             return createEntryorUpdate;
 
@@ -103,7 +115,7 @@ class Kitchen {
                 }
             )
             if (!updateMealObj) {
-                throw new InternalServerError("error in the updating side ")
+                throw new NotImplementedError("error in the updating side ")
             }
             return updateMealObj;
         }

@@ -24,6 +24,24 @@ const createInvent = async (req: Request<{}, {}, IngredientStocktype>, res: Resp
         next(err);
     }
 }
+
+const ReadInventoryByIngName= async(req:Request,res:Response,next:NextFunction)=>{
+    try{
+        const IngName:string|any= req.params.IngName;
+        const ReadInventData:string= await KitchenObj.readbyIngName(IngName);
+        if(!ReadInventData){
+            throw new NotFoundError(`failed to fetch data of the ingredient name `);
+        }
+        successResponse(res,
+            200,
+            "fetched data successfully",
+            ReadInventData
+        );
+
+    }catch(err){
+        next(err);
+    }
+}
 const ReadSalesByDaily = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const SaleDate: string | Date = req.params.SaleDate as string;
@@ -41,4 +59,4 @@ const ReadSalesByDaily = async (req: Request, res: Response, next: NextFunction)
     }
 }
 
-export { createInvent, ReadSalesByDaily };
+export { createInvent, ReadSalesByDaily,ReadInventoryByIngName};

@@ -1,4 +1,6 @@
 
+import { IngredientStockModel } from "../KitchenSrc/KitchenModels/Kitchen.model";
+import KitchenObj from "../KitchenSrc/KitchenServices/Kitchen.service";
 import { DishIngModel } from "../MenuSrc/MenuModels/Menu.model";
 import { getMealTypeByTime, paraMeal } from "./Function";
 import { salesbyDaily } from "./SaleFunction";
@@ -168,7 +170,20 @@ export const checkAddDishAddIng = async (Ingbody: any) => {
         }
     }
 
+}
 
+export const checkforInventoryStock = async (inventBody: any)=>{
+    const ingname = inventBody.IngredientName;
+    const dataInDb = await KitchenObj.readbyIngName(ingname);
 
+    if (!dataInDb) {
+        const AddIngredientInStock = await IngredientStockModel.create(inventBody);
+        if (!AddIngredientInStock) {
+            return `failed to add the data in the Ingredient Stock`;
+        }
+        return AddIngredientInStock;
+    } else {
+        return `Ingredient is already in the Stock ${dataInDb}`;
+    }
 
 }

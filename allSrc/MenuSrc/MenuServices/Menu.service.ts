@@ -1,6 +1,6 @@
 import { checkAddDishAddIng, KitchenProcess } from "../../ConversionFunc/KitchenFunction";
 import { MenuModel, DishIngModel } from "../MenuModels/Menu.model";
-import { InternalServerError, NotFoundError } from "../../utils/errorClasses";
+import { BadRequestError, InternalServerError, NotFoundError, NotImplementedError } from "../../utils/errorClasses";
 import { checkMealMenu } from "../../ConversionFunc/Function";
 
 class Menu {
@@ -12,12 +12,9 @@ class Menu {
 
             if (!checkforMenu) {
 
-                console.log(checkforMenu, "in the checkforMenu");
-                throw new InternalServerError("something wrong in this side of checkforMenu function");
+                throw new NotImplementedError("something wrong in this side of checkforMenu function");
 
             }
-
-            console.log("below checkforMenu");
 
             return checkforMenu;
 
@@ -34,7 +31,7 @@ class Menu {
             const IngData = await checkAddDishAddIng(Ingbody);
 
             if (!IngData) {
-                throw new InternalServerError("error in  Dish ingrident");
+                throw new NotImplementedError("error in  Dish ingrident");
             }
 
             return IngData;
@@ -78,11 +75,10 @@ class Menu {
                     Ingredient: 1
                 });
 
-            console.log(reDish[0], "redish service redish");
             const cookdata = await KitchenProcess(reDish[0], onWaiting);
 
             if (cookdata) {
-                console.log(cookdata, "cookdata");
+
                 return cookdata;
             }
 
@@ -101,7 +97,7 @@ class Menu {
                 Meal: Meal
             });
             if (!findDeleteMenu) {
-                return `No data available on behalf of this Meal in the Menu`;
+                throw new NotFoundError(`No data available on behalf of this Meal in the Menu`);
             }
             return " Menu deleted successfully";
 
@@ -118,12 +114,9 @@ class Menu {
                 }
             );
 
-
-            console.log(findDeleteDishbyMenu, "find dish delete");
-
             if (!findDeleteDishbyMenu) {
 
-                return 'No data available of the Dish Name';
+                throw new NotFoundError('No data available of the Dish Name');
             }
             return `Dish Obj deleted successfully`;
         }
@@ -131,7 +124,7 @@ class Menu {
     }
 
     async deleteDishIng(Dish: any, IngName: any) {
-        
+
         if (IngName === "Default") {
             const findDishIngforDelete = await DishIngModel.findOneAndDelete(
                 {
@@ -140,7 +133,7 @@ class Menu {
                 }
             );
             if (!findDishIngforDelete) {
-                return ` No Dishes available in the Dishes `;
+                throw new NotFoundError(` No Dishes available in the Dishes `);
             }
             return findDishIngforDelete;
         }
@@ -159,7 +152,7 @@ class Menu {
                 }
             )
             if (!findDishIng) {
-                return `Ingredient is not listed in the Dish for making purpose`;
+                throw new BadRequestError(`Ingredient is not listed in the Dish for making purpose`);
             }
             return findDishIng;
         }

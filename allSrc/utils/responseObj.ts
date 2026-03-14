@@ -8,8 +8,8 @@ export const successResponse = (
 ) => {
   return res.status(statusCode).json({
     success: true,
-    statusCode,
-    message,
+    statusCode:res.statusCode,
+    message:res.statusMessage,
     data,
     timeStamp: new Date()
   });
@@ -24,9 +24,9 @@ export const errorResponse = (
 ) => {
   return res.status(statusCode).json({
     success: false,
-    statusCode,
-    name,
-    message,
+    statusCode:res.statusCode,
+    name:res.constructor.name,
+    message:res.statusMessage,
     stack,
     timeStamp: new Date()
   });
